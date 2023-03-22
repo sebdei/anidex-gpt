@@ -11,4 +11,4 @@ https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-awscli.html#with-use
 `aws lambda create-function --function-name anidex-text-for-image --zip-file fileb://function.zip --handler index.handler --runtime nodejs18.x --role arn:aws:iam::265131218627:role/lambda-ex`
 
 # Start Local Development with AWS sam
-`sam local start-api --host 0.0.0.0`
+`sam local start-api --host 0.0.0.0 --env-vars .env.json`

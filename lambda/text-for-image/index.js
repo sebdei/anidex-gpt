@@ -18,8 +18,7 @@ exports.handler = async (event) => {
   const result = natureObjectName && await generateOpenAiResponse(natureObjectName)
 
   const text = result?.choices?.[0]?.text
-
-  const responseBody = { text: text }
+  const response = { text: text }
 
   return {
     statusCode: 200,
@@ -27,7 +26,7 @@ exports.handler = async (event) => {
       'Content-Type': 'text/plain',
       ...corsHeaders(event)
     },
-    body: JSON.stringify(responseBody)
+    body: JSON.stringify(response)
   }
 }
 

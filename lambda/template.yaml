@@ -21,6 +21,9 @@ Resources:
       CodeUri: text-for-image/
       Handler: index.handler
       Runtime: nodejs18.x
+      Environment:
+        Variables:
+          OPEN_AI_API_KEY: OPEN_AI_API_KEY
       Events:
         Api:
           Type: Api
