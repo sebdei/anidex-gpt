@@ -48,8 +48,8 @@ async function generateOpenAiResponse(natureObjectName) {
   const resp = await fetch(OPEN_AI_GPT_BASE_URL, {
     body: JSON.stringify(requestBody),
     headers: {
-      "Content-Type": "application/json; charset=UTF-8",
-      "Authorization": `Bearer ${process.env.OPEN_AI_API_KEY}`
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': `Bearer ${process.env.OPEN_AI_API_KEY}`
     },
     method: 'POST'
   })
