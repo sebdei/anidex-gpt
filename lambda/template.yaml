@@ -1,9 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-app
-
-  Sample SAM Template for sam-app
+  local-test
 
 Globals:
   Function:
@@ -20,6 +18,7 @@ Resources:
   TextForImage:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: text-for-image/
       Handler: index.handler
       Runtime: nodejs18.x
       Events:
