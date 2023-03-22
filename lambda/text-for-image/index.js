@@ -13,8 +13,10 @@ exports.handler = async (event) => {
   }
 
   const blob = await getBlobImage(imageDataUrl)
+
   const natureObjectName = blob && await identify(blob)
   const result = natureObjectName && await generateOpenAiResponse(natureObjectName)
+
   const text = result?.choices?.[0]?.text
 
   const responseBody = { text: text }
