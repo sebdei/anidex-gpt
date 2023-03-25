@@ -2,7 +2,6 @@
   <div class="container">
     <div class="d-flex align-items-center justify-content-around image-selection">
       <ImageDataUrlLoader @change="setImageDataUrl" />
-      <CameraDataUrlLoader @change="setImageDataUrl" />
     </div>
 
     <div v-if="imageDataUrl">
@@ -45,14 +44,12 @@ import { synthesisText } from '@/service/speechsynthesis'
 import api from '@/service/api'
 
 import { Cropper } from 'vue-advanced-cropper'
-import CameraDataUrlLoader from '@/components/input/CameraDataUrlLoader.vue'
 import ImageDataUrlLoader from '@/components/input/ImageDataUrlLoader.vue'
 
 import 'vue-advanced-cropper/dist/style.css'
 
 export default {
   components: {
-    CameraDataUrlLoader,
     Cropper,
     ImageDataUrlLoader
   },

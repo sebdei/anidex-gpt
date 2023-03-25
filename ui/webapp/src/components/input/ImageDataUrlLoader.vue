@@ -2,7 +2,7 @@
   <div>
     <label for="file-upload" class="custom-file-upload">
       <span class="material-icons md-48">
-        photo_library
+        photo_camera
       </span>
     </label>
 

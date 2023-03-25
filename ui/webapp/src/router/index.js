@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import ImageSelection from '@/views/imageselection/ImageSelection.vue'
+import IdentifyImage from '@/views/identify/IdentifyImage.vue'
 
 const routes = [
-  { path: '/', redirect: { name: 'image_selection' } },
-  { path: '/image_selection', name: 'image_selection', component: ImageSelection, props: true }
+  { path: '/', redirect: { name: 'identify' } },
+  { path: '/identify', name: 'identify', component: IdentifyImage, props: true }
 ]
 
 const router = createRouter({
