@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { IDENTIFY_IMAGE_URL } from '@/urls'
 import { synthesisText } from '@/service/speechsynthesis'
 import api from '@/service/api'
 
@@ -71,7 +72,7 @@ export default {
 
       const data = { image_data_url: croppedImageDataUrl }
 
-      const { text } = await api.post('http://192.168.178.30:3000/text-for-image', data)
+      const { text } = await api.post(IDENTIFY_IMAGE_URL, data)
       this.isFetching = false
 
       console.log(text)
