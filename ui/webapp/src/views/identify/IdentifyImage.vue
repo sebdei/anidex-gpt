@@ -64,6 +64,7 @@ export default {
   },
   methods: {
     sendCroppedImage: async function () {
+      // !sic Initializing speech synthesis here, because it is not possible to use the WebSpeech API after async behavior
       synthesisText('Bitte einen Moment!')
 
       this.showIdentifyButton = false
