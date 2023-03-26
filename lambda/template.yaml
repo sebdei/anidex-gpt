@@ -9,16 +9,15 @@ Globals:
     MemorySize: 256
   Api:
     Cors:
-      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowMethods: "'POST,OPTIONS'"
       AllowHeaders: "'content-type'"
       AllowOrigin: "'*'"
-      AllowCredentials: "'*'"
 
 Resources:
   TextForImage:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: text-for-image/
+      CodeUri: identify/
       Handler: index.handler
       Runtime: nodejs18.x
       Environment:
@@ -28,5 +27,5 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /text-for-image
+            Path: /identify
             Method: post
