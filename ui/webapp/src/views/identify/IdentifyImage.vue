@@ -18,7 +18,7 @@
         @click="sendCroppedImage"
         class="btn btn-secondary btn-lg btn-block"
         >
-          Identify
+          Identifizieren
       </button>
 
       <div
@@ -64,21 +64,21 @@ export default {
   },
   methods: {
     sendCroppedImage: async function () {
+      synthesisText('Bitte einen Moment!')
+
       this.showIdentifyButton = false
       this.isFetching = true
 
       const { canvas } = this.$refs.cropper.getResult();
-      const croppedImageDataUrl = canvas.toDataURL("image/jpeg")
+      const croppedImageDataUrl = canvas.toDataURL('image/jpeg')
 
       const data = { image_data_url: croppedImageDataUrl }
-
       const { text } = await api.post(IDENTIFY_IMAGE_URL, data)
+
       this.isFetching = false
-
-      console.log(text)
-      synthesisText(text)
-
       this.responseText = text
+
+      synthesisText(text)
     },
     setImageDataUrl: function (imageDataUrl) {
       this.showIdentifyButton = true
