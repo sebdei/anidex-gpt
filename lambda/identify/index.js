@@ -13,11 +13,11 @@ exports.handler = async (event) => {
   }
 
   const blob = await getBlobImage(imageDataUrl)
-
   const natureObjectName = blob && await identify(blob)
-  const result = natureObjectName && await generateOpenAiResponse(natureObjectName)
 
+  const result = natureObjectName && await generateOpenAiResponse(natureObjectName)
   const text = result?.choices?.[0]?.text
+
   const response = { text: text }
 
   return {
@@ -34,7 +34,7 @@ function corsHeaders(event) {
   return {
     'Access-Control-Allow-Credentials': false,
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Origin': event?.headers?.['Origin'] || '*'
   }
 }
