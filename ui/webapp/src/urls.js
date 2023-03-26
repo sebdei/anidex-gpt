@@ -1,1 +1,1 @@
-export const IDENTIFY_IMAGE_URL = 'https://93p04aq0gh.execute-api.eu-central-1.amazonaws.com/identify'
+export const IDENTIFY_IMAGE_URL = process.env.VUE_APP_IDENTIFY_IMAGE_URL || window.location.host
