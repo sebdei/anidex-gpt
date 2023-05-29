@@ -1,7 +1,16 @@
-const NATURAL_IDENTIFICATION_BASE_URL = 'https://identify.biodiversityanalysis.nl/v1/observation/identify'
-const OPEN_AI_GPT_BASE_URL = 'https://api.openai.com/v1/completions'
+import { LLMChain } from 'langchain/chains'
+import { OpenAI } from 'langchain/llms/openai'
+import { PromptTemplate } from 'langchain/prompts'
 
-exports.handler = async (event) => {
+const NATURAL_IDENTIFICATION_BASE_URL = 'https://identify.biodiversityanalysis.nl/v1/observation/identify'
+const TEMPLATE = 'I want you to act as a encyclopedie that contains useful facts about animals and plants. \
+You answer in the style of a pokedex from pokemon using the provided context. \
+What is {natureObjectName}? \
+Context: \
+{wikiContext} \
+Answer in german:'
+
+export const handler = async (event) => {
   const body = event?.body && JSON.parse(event.body)
   const imageDataUrl = body?.image_data_url
 
@@ -13,11 +22,12 @@ exports.handler = async (event) => {
   }
 
   const blob = await getBlobImage(imageDataUrl)
+
   const natureObjectName = blob && await identify(blob)
+  const natureObjectNameGerman = natureObjectName && await getGermanTitle(natureObjectName)
+  const wikiContext = natureObjectNameGerman && await getWikiContext(natureObjectNameGerman)
 
-  const result = natureObjectName && await generateOpenAiResponse(natureObjectName)
-  const text = result?.choices?.[0]?.text
-
+  const text = natureObjectNameGerman && await queryOpenAi(natureObjectNameGerman, wikiContext)
   const response = { text: text }
 
   return {
@@ -39,23 +49,30 @@ function corsHeaders(event) {
   }
 }
 
-async function generateOpenAiResponse(natureObjectName) {
-  const requestBody = {
-    prompt: `Was ist der deutsche name von ${natureObjectName}? Schreibe zwei Sätze über die interessantesten Fakten zu der Art.`,
-    model: 'text-davinci-003',
-    max_tokens: 300
-  }
+async function getGermanTitle(natureObjectName) {
+  const url = `https://de.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&srlimit=1&format=json&srsearch=${encodeURIComponent(natureObjectName)}`
+  const resp = await fetch(url)
+  const json = resp && await resp.json()
 
-  const resp = await fetch(OPEN_AI_GPT_BASE_URL, {
-    body: JSON.stringify(requestBody),
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': `Bearer ${process.env.OPEN_AI_API_KEY}`
-    },
-    method: 'POST'
-  })
+  return json?.query?.search?.[0]?.title
+}
 
-  return resp && await resp.json()
+  async function getWikiContext(title) {
+  const url = `https://de.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&explaintext=1&formatversion=2&format=json&titles=${encodeURIComponent(title)}`
+  const resp = await fetch(url)
+  const json = resp && await resp.json()
+
+  return json?.query?.pages?.[0]?.extract
+}
+
+async function queryOpenAi(natureObjectName, wikiContext) {
+  const model = new OpenAI({ openAIApiKey: process.env.OPEN_AI_API_KEY, temperature: 0.2 })
+  const prompt = new PromptTemplate({ template: TEMPLATE, inputVariables: ['natureObjectName', 'wikiContext'] })
+
+  const chain = new LLMChain({ llm: model, prompt: prompt })
+  const resp = await chain.call({ natureObjectName: natureObjectName, wikiContext: wikiContext })
+
+  return resp?.text
 }
 
 async function getBlobImage(imageDataUrl) {
