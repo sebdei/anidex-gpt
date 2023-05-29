@@ -1,7 +1,7 @@
 https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-awscli.html#with-userapp-walkthrough-custom-events-list-functions
 
 # Update AWS Lambda Function
-`zip function.zip index.js`
+`cd identify && zip -r function.zip . && cd ..`
 
 `aws lambda update-function-code --function-name anidex-gpt-identify --zip-file fileb://identify/function.zip`
 
