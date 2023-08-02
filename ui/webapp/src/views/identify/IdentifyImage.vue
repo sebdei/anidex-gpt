@@ -41,7 +41,7 @@
 
 <script>
 import { IDENTIFY_IMAGE_URL } from '@/urls'
-import { synthesisText } from '@/service/speechsynthesis'
+// import { synthesisText } from '@/service/speechsynthesis'
 import api from '@/service/api'
 
 import { Cropper } from 'vue-advanced-cropper'
@@ -65,7 +65,9 @@ export default {
   methods: {
     sendCroppedImage: async function () {
       // !sic Initializing speech synthesis here, because it is not possible to use the WebSpeech API after async behavior
-      synthesisText('Bitte einen Moment!')
+      // synthesisText('Bitte einen Moment!')
+
+      const audio = new Audio()
 
       this.showIdentifyButton = false
       this.isFetching = true
@@ -74,12 +76,15 @@ export default {
       const croppedImageDataUrl = canvas.toDataURL('image/jpeg')
 
       const data = { image_data_url: croppedImageDataUrl }
-      const { text } = await api.post(IDENTIFY_IMAGE_URL, data)
+      const { text, url } = await api.post(IDENTIFY_IMAGE_URL, data)
 
       this.isFetching = false
       this.responseText = text
 
-      synthesisText(text)
+      audio.src = url
+      audio.play()
+
+      // synthesisText(text)
     },
     setImageDataUrl: function (imageDataUrl) {
       this.showIdentifyButton = true
