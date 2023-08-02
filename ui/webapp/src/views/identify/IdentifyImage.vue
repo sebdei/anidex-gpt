@@ -67,6 +67,9 @@ export default {
       // !sic Initializing speech synthesis here, because it is not possible to use the WebSpeech API after async behavior
       // synthesisText('Bitte einen Moment!')
 
+      const audio = new Audio()
+      audio.crossOrigin = 'anonymous'
+
       this.showIdentifyButton = false
       this.isFetching = true
 
@@ -79,7 +82,8 @@ export default {
       this.isFetching = false
       this.responseText = text
 
-      await new Audio(url).play()
+      audio.src = url
+      new Audio.play()
 
       // synthesisText(text)
     },
