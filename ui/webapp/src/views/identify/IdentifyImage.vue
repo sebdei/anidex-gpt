@@ -83,7 +83,7 @@ export default {
       this.responseText = text
 
       audio.src = url
-      new Audio.play()
+      audio.play()
 
       // synthesisText(text)
     },
