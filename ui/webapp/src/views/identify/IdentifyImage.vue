@@ -68,6 +68,7 @@ export default {
       // synthesisText('Bitte einen Moment!')
 
       const audio = new Audio()
+      audio.crossOrigin = 'anonymous'
 
       this.showIdentifyButton = false
       this.isFetching = true
