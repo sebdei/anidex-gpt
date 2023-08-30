@@ -1,6 +1,7 @@
 import { LLMChain } from 'langchain/chains'
 import { OpenAI } from 'langchain/llms/openai'
 import { PromptTemplate } from 'langchain/prompts'
+import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly'
 
 const NATURAL_IDENTIFICATION_BASE_URL = 'https://identify.biodiversityanalysis.nl/v1/observation/identify'
 const TEMPLATE = 'I want you to act as a encyclopedie that contains useful facts about animals and plants. \
@@ -9,6 +10,9 @@ What is {natureObjectName}? \
 Context: \
 {wikiContext} \
 Answer in german:'
+
+const REGION = "eu-central-1"
+const pollyClient = new PollyClient({ region: REGION })
 
 export const handler = async (event) => {
   const body = event?.body && JSON.parse(event.body)
@@ -28,7 +32,9 @@ export const handler = async (event) => {
   const wikiContext = natureObjectNameGerman && await getWikiContext(natureObjectNameGerman)
 
   const text = natureObjectNameGerman && await queryOpenAi(natureObjectNameGerman, wikiContext)
-  const response = { text: text }
+  const url = await synthesizeText(text)
+
+  const res = { text, url }
 
   return {
     statusCode: 200,
@@ -36,7 +42,7 @@ export const handler = async (event) => {
       'Content-Type': 'text/plain',
       ...corsHeaders(event)
     },
-    body: JSON.stringify(response)
+    body: JSON.stringify(res)
   }
 }
 
@@ -91,4 +97,22 @@ async function identify(blob) {
   const json = resp && await resp.json()
 
   return json?.predictions?.[0]?.taxon?.name
+}
+
+async function synthesizeText(text) {
+  const params = {
+    Engine: 'neural',
+    LanguageCode: "de-DE",
+    OutputFormat: "mp3",
+    Text: text,
+    TextType: "text",
+    VoiceId: "Vicki"
+  }
+
+  const command = new SynthesizeSpeechCommand(params)
+
+  const { AudioStream } = await pollyClient.send(command)
+  const base64String = AudioStream && await AudioStream.transformToString('base64');
+
+  return !base64String ? '' : `data:audio/mp3;base64,${base64String}`
 }

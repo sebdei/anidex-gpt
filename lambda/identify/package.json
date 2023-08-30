@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-polly": "^3.379.1",
     "langchain": "^0.0.78"
   },
   "type": "module"

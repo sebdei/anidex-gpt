@@ -41,7 +41,6 @@
 
 <script>
 import { IDENTIFY_IMAGE_URL } from '@/urls'
-// import { synthesisText } from '@/service/speechsynthesis'
 import api from '@/service/api'
 
 import { Cropper } from 'vue-advanced-cropper'
@@ -64,9 +63,6 @@ export default {
   },
   methods: {
     sendCroppedImage: async function () {
-      // !sic Initializing speech synthesis here, because it is not possible to use the WebSpeech API after async behavior
-      // synthesisText('Bitte einen Moment!')
-
       const audio = new Audio()
       audio.crossOrigin = 'anonymous'
 
@@ -84,11 +80,10 @@ export default {
 
       audio.src = url
       audio.play()
-
-      // synthesisText(text)
     },
     setImageDataUrl: function (imageDataUrl) {
       this.showIdentifyButton = true
+      this.responseText = null
       this.imageDataUrl = imageDataUrl
     }
   }
